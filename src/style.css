@@ -123,11 +123,17 @@ output {
   transition: opacity 200ms, box-shadow 200ms;
 }
 
+/* Hull pips are little ship silhouettes; cannon cells share the row evenly. */
 .pip {
+  width: 22px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: currentColor;
   color: var(--pink);
 }
 
 .cell {
+  flex: 1;
+  border-radius: 2px;
   color: var(--yellow);
 }
 
@@ -191,6 +197,13 @@ output {
   gap: 10px;
   font-size: 12px;
   color: var(--muted);
+}
+
+.stop-dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
 }
 
 .stop[data-state="cleared"] {
