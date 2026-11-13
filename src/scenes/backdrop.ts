@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { HEIGHT, WIDTH } from "./actors.ts";
+import { HEIGHT, WIDTH } from "../actors.ts";
 
 /** Parallax space shared by every scene, plus the camera's glow treatment. */
 export class Backdrop {
@@ -36,4 +36,39 @@ export class Backdrop {
       layer.tilePositionY -= speed * this.warp * frames;
     }
   }
+}
+
+// Every scene change fades through the same deep-space color.
+const FADE_RED = 4;
+const FADE_GREEN = 2;
+const FADE_BLUE = 12;
+const FADE_OUT_MS = 450;
+
+/** Fades a scene in from the fade color. */
+export function fadeIn(scene: Phaser.Scene, durationMs: number): void {
+  scene.cameras.main.fadeIn(durationMs, FADE_RED, FADE_GREEN, FADE_BLUE);
+}
+
+/** Scenes that are already fading out to another scene. */
+const leaving = new WeakSet<Phaser.Scene>();
+
+/**
+ * Fades the scene out, then starts the scene with the given key. Returns
+ * false and does nothing if this scene is already on its way out.
+ */
+export function fadeTo(
+  scene: Phaser.Scene,
+  key: string,
+  data?: object,
+): boolean {
+  if (leaving.has(scene)) return false;
+  leaving.add(scene);
+  scene.events.once(
+    Phaser.Scenes.Events.SHUTDOWN,
+    () => leaving.delete(scene),
+  );
+  const camera = scene.cameras.main;
+  camera.fadeOut(FADE_OUT_MS, FADE_RED, FADE_GREEN, FADE_BLUE);
+  camera.once("camerafadeoutcomplete", () => scene.scene.start(key, data));
+  return true;
 }
