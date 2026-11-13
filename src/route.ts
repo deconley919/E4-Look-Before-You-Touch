@@ -41,14 +41,13 @@ export interface EnemyStats {
   score: number;
   radius: number;
   dropChance: number;
-  fires: boolean;
 }
 
 export const ENEMIES: Record<EnemyKind, EnemyStats> = {
-  drone: { hp: 2, score: 100, radius: 13, dropChance: 0.015, fires: true },
-  dart: { hp: 1, score: 150, radius: 12, dropChance: 0.015, fires: false },
-  turret: { hp: 12, score: 400, radius: 19, dropChance: 0.3, fires: true },
-  lancer: { hp: 4, score: 250, radius: 15, dropChance: 0.06, fires: true },
+  drone: { hp: 2, score: 100, radius: 13, dropChance: 0.015 },
+  dart: { hp: 1, score: 150, radius: 12, dropChance: 0.015 },
+  turret: { hp: 12, score: 400, radius: 19, dropChance: 0.3 },
+  lancer: { hp: 4, score: 250, radius: 15, dropChance: 0.06 },
 };
 
 export const STRAGGLER_TICKS = 240;

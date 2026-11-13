@@ -149,7 +149,6 @@ export class Player extends Actor {
   }
 }
 
-// angle from a point toward the player
 function aim(from: { x: number; y: number }, arena: Arena): number {
   return Math.atan2(arena.player.y - from.y, arena.player.x - from.x);
 }
@@ -172,9 +171,6 @@ export class PowerUp extends Actor {
   }
 }
 
-export type EnemyRecord = Omit<EnemyStats, "fires">;
-
-// anything the player can shoot down for points
 export abstract class Enemy extends Actor {
   hp: number;
   readonly score: number;
@@ -186,7 +182,7 @@ export abstract class Enemy extends Actor {
     x: number,
     y: number,
     texture: string,
-    record: EnemyRecord,
+    record: EnemyStats,
   ) {
     super(scene, x, y, texture, record.radius);
     this.hp = record.hp;
@@ -196,7 +192,6 @@ export abstract class Enemy extends Actor {
 
   abstract step(arena: Arena): void;
 
-  // returns true when this hit destroys the enemy
   takeDamage(amount: number): boolean {
     this.hp -= amount;
     this.flash = 3;
@@ -211,7 +206,6 @@ export abstract class Enemy extends Actor {
   }
 }
 
-// how one kind of raider flies and shoots
 interface Tactics {
   move(raider: Raider, arena: Arena): void;
   fire?(raider: Raider, arena: Arena): void;
@@ -268,11 +262,8 @@ const TACTICS: Record<EnemyKind, Tactics> = {
   },
 };
 
-// A route enemy: a drone, dart, turret or lancer
 export class Raider extends Enemy {
-  // Where this raider spawned; drones weave around it
   readonly homeX: number;
-  // Sideways speed a dart commits to when it dives
   heading = 0;
   private readonly tactics: Tactics;
 
@@ -281,7 +272,6 @@ export class Raider extends Enemy {
     x: number,
     y: number,
     readonly kind: EnemyKind,
-    // +1 or -1: which way this raider weaves or sweeps
     readonly side = 1,
   ) {
     super(scene, x, y, kind, ENEMIES[kind]);
@@ -300,14 +290,13 @@ export class Raider extends Enemy {
   }
 }
 
-const WARDEN: EnemyRecord = {
+const WARDEN: EnemyStats = {
   hp: 900,
   score: 10000,
   radius: 46,
   dropChance: 0,
 };
 
-// The Warden: a 3phase boss whose attacks escalate as it weakens
 export class Warden extends Enemy {
   readonly maxHp = WARDEN.hp;
   readonly core: Phaser.GameObjects.Image;
@@ -328,7 +317,6 @@ export class Warden extends Enemy {
     return this.fraction > 2 / 3 ? 1 : this.fraction > 1 / 3 ? 2 : 3;
   }
 
-  // The Warden ignores damage until it has finished descending
   get arrived(): boolean {
     return this.age > 150;
   }

@@ -4,6 +4,7 @@ import type { Hud } from "../hud.ts";
 import { play } from "../sounds.ts";
 import { TINTS } from "../textures.ts";
 import { Backdrop, fadeIn, fadeTo } from "./backdrop.ts";
+import type { RunTotals } from "./play.ts";
 
 const STORY: [number, string][] = [
   [0.8, "The Warden's lights go dark, one ring at a time."],
@@ -15,7 +16,7 @@ const CREDITS_AT = 11;
 const RETURN_AT = 18;
 
 export interface Finale {
-  run: { score: number; kills: number; hits: number; continues: number };
+  run: RunTotals;
   demo: boolean;
 }
 
